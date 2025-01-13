@@ -1,26 +1,169 @@
 function main() {
+  const baseUrl = 'https://books-api.dicoding.dev';
 
   const getBook = () => {
-    // tuliskan kode di sini!
+    fetch(`${baseUrl}/list`)
+      .then((response) => {
+        return response.json();
+    })
+      .then((responseJson) => {
+        if(responseJson.error) {
+          showResponseMessage(responseJson.message);
+        } else {
+          renderAllBooks(responseJson.books);
+        }
+      })
+      .catch((error) => {
+        showResponseMessage();
+      });
+
+
+    // const xhr = new XMLHttpRequest();
+    // xhr.onload = function() {
+
+    //   if(responseJson.error) {
+    //     showResponseMessage(responseJson.message);
+    //   } else {
+    //     renderAllBooks(responseJson.books);
+    //   }
+    // };
+
+    //   xhr.onerror = function() {
+    //     showResponseMessage();
+    //   };
+
+    //   xhr.open("GET", `${baseUrl}/list`);
+
+    //   // mengirim request
+    //   xhr.send();
   };
+
 
 
   const insertBook = (book) => {
-    // tuliskan kode di sini!
+    fetch(`${baseUrl}/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-Token': '12345',
+      },
+      body: JSON.stringify(book),
+    })
+  
+      .then((response) => {
+        return response.json();
+      })
+      .then((responseJson) => {
+        showResponseMessage(responseJson.message);
+        getBook();
+      }
+      )
+      .catch((error) => {
+        showResponseMessage(error);
+      });
+
+    // tuliskan kode di sini! kode lama
+    // const xhr = new XMLHttpRequest();
+    // xhr.onload = function() {
+    //   const responseJson = JSON.parse(this.responseText);
+
+    //   showResponseMessage(responseJson.message);
+
+    //   getBook();
+
+    // };
+
+    //   xhr.onerror = function() {
+    //     showResponseMessage();
+    //   };
+
+    //   xhr.open("POST", `${baseUrl}/add`);
+
+    //   // Menetapkan properti Content-Type dan X-Auth-Token pada Header request
+    // xhr.setRequestHeader('Content-Type', 'application/json');
+    // xhr.setRequestHeader('X-Auth-Token', '12345');
+ 
+    // // Mengirimkan request dan menyisipkan JSON.stringify(book) pada body
+    // xhr.send(JSON.stringify(book));
+
   };
 
-  const updateBook = (book) => {
-    // tuliskan kode di sini!
-  };
+const updateBook = async (book) => {
+  try {
+    const options = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-Token': '12345',
+      },
+      body: JSON.stringify(book),
+    };
+    const response = await fetch(`${baseUrl}/edit/${book.id}`, options);
+    const responseJson = await response.json();
+    showResponseMessage(responseJson.message);
+    getBook();
+  }
+  catch (error) {
+    showResponseMessage(error);
+  }
+};
+
+  // const updateBook = (book) => {
+
+
+  
+  
+  
+  //   // tuliskan kode di sini! model lama
+  //   // const xhr = new XMLHttpRequest() ;
+
+  //   // xhr.onload = function() {
+  //   //   const responseJson = JSON.parse(this.responseText);
+
+  //   //   showResponseMessage(responseJson.message);
+
+  //   //   getBook();
+  //   // };
+
+  //   // xhr.onerror = function() {
+  //   //   showResponseMessage();
+  //   // };
+
+  //   // xhr.open("PUT", `${baseUrl}/edit/${book.id}`) ;
+
+  //   // xhr.setRequestHeader('Content-Type', 'application/json');
+  //   // xhr.setRequestHeader('X-Auth-Token', '12345');
+
+  //   // xhr.send(JSON.stringify(book));
+  // };
 
   const removeBook = (bookId) => {
     // tuliskan kode di sini!
-  };
+    const xhr = new XMLHttpRequest();
+
+    xhr.onload = function() {
+      const responseJson2 = JSON.parse(this.responseText);
+
+      showResponseMessage(responseJson2.message);
+
+      getBook();
 
 
-  
-  
-  
+    };
+
+    xhr.onerror = function() {
+      showResponseMessage();
+    }
+
+    xhr.open("DELETE", `${baseUrl}/delete/${bookId}`);
+
+    xhr.setRequestHeader('X-Auth-Token', '12345');
+
+    xhr.send();
+
+  }; 
+
+
   
   /*
       jangan ubah kode di bawah ini ya!
